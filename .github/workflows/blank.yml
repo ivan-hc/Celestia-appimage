@@ -1,0 +1,67 @@
+name: Release Celestia Appimage Enanced
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: build
+      run: |
+        sudo apt update && sudo apt install libfuse2
+        mkdir dist
+        mkdir tmp
+        cd tmp
+        wget https://download.opensuse.org/repositories/home:/munix9/AppImage/celestia-latest-x86_64.AppImage
+        wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+        chmod a+x ./*AppImage
+        ./celestia*AppImage --appimage-extract
+        mv squashfs-root celestia.AppDir
+        cd celestia.AppDir
+        rm -R -f bin dev etc lib run sbin var usr/share/celestia/textures/medres usr/share/celestia/textures/hires usr/share/celestia/textures/lores
+        git clone https://github.com/ivan-hc/Celestia-appimage.git
+        mv Celestia-appimage/textures/hires usr/share/celestia/textures/
+        cd usr/share/celestia/textures/
+        ln -s hires lores
+        ln -s hires medres
+        cd -
+        rm -R -f Celestia-appimage
+        cd ..
+        cd ..
+        ARCH=x86_64 tmp/appimagetool-x86_64.AppImage -n tmp/celestia.AppDir
+        BUILD=$(date +%Y%m%d-%H%M%S)
+        mv *AppImage dist/Celestia-Enanched-$BUILD-x86_64.AppImage
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Celestia-Enanced-x86_64.AppImage
+        path: 'dist'
+
+  release:
+      needs: [build]
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/download-artifact@v1
+          with:
+            name: Celestia-Enanced-x86_64.AppImage
+
+        - name: release
+          uses: marvinpinto/action-automatic-releases@latest
+          with:
+            title: Continuous build
+            automatic_release_tag: continuous
+            prerelease: false
+            draft: false
+            files: |
+              Celestia-Enanced-x86_64.AppImage
+            repo_token: ${{ secrets.GITHUB_TOKEN }}
