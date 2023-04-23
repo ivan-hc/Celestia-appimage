@@ -1,5 +1,5 @@
 # Celestia-appimage
-An enhanced AppImage version of Celestia 1.6.2.2, the 3D space visualizer, including new and more detailed maps of planets and moons.
+An enhanced AppImage version of Celestia, the 3D space visualizer, including new and more detailed maps of planets and moons.
 
 ## Original sources
 - SITE: https://celestia.space
