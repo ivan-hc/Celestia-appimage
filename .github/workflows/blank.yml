@@ -41,6 +41,8 @@ jobs:
         BUILD=$(date +%Y%m%d-%H%M%S)
         mv *AppImage dist/Celestia-Enanched-$BUILD-x86_64.AppImage
     - uses: gautamkrishnar/keepalive-workflow@v1
+      with:
+        gh_token: ${{ secrets.GH_TOKEN }}
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
