@@ -1,4 +1,4 @@
-name: Release Celestia Appimage Enanced
+name: Celestia Appimage
 concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
@@ -13,46 +13,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+
     - name: build
+      if: always()
       run: |
-        sudo apt update && sudo apt install libfuse2
+        sudo apt update
+        sudo apt install libfuse2
+        wget https://raw.githubusercontent.com/ivan-hc/Celestia-appimage/main/celestia-junest.sh
+        chmod a+x ./celestia-junest.sh
+        ./celestia-junest.sh
         mkdir dist
-        mkdir tmp
-        cd tmp
-        wget https://download.opensuse.org/repositories/home:/munix9/AppImage/celestia-latest-x86_64.AppImage
-        wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-        chmod a+x ./*AppImage
-        ./celestia*AppImage --appimage-extract
-        mv squashfs-root celestia.AppDir
-        cd celestia.AppDir
-        rm -R -f bin dev etc lib run sbin var usr/share/celestia/textures/medres usr/share/celestia/textures/hires usr/share/celestia/textures/lores
-        git clone https://github.com/ivan-hc/Celestia-appimage.git
-        mv Celestia-appimage/textures/hires usr/share/celestia/textures/
-        cd usr/share/celestia/textures/
-        ln -s hires lores
-        ln -s hires medres
-        cd -
-        rm -R -f Celestia-appimage
-        cd ..
-        cd ..
-        ARCH=x86_64 tmp/appimagetool-x86_64.AppImage -n tmp/celestia.AppDir
-        VERSION=$(wget -q https://download.opensuse.org/repositories/home:/munix9/AppImage/ -O - | grep "href=" | grep -i "appimage.zsync" | grep -v latest | head -1 | grep -E -o "([0-9]{1,}\.)+[0-9]{1,}" | head -1)
-        mv *AppImage dist/Celestia-$VERSION-Enanched-x86_64.AppImage
+        mv *AppImage dist/
 
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: Celestia-Enanced-x86_64.AppImage
+        name: Celestia-x86_64.AppImage
         path: 'dist'
-
+        
   release:
       needs: [build]
+      permissions: write-all
       runs-on: ubuntu-latest
 
       steps:
         - uses: actions/download-artifact@v1
           with:
-            name: Celestia-Enanced-x86_64.AppImage
+            name: Celestia-x86_64.AppImage
 
         - name: release
           uses: marvinpinto/action-automatic-releases@latest
@@ -62,5 +49,6 @@ jobs:
             prerelease: false
             draft: false
             files: |
-              Celestia-Enanced-x86_64.AppImage
+              Celestia-x86_64.AppImage
             repo_token: ${{ secrets.GITHUB_TOKEN }}
+
