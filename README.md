@@ -1,10 +1,12 @@
-# Celestia-appimage
-An enhanced AppImage version of Celestia, the 3D space visualizer, including new and more detailed maps of planets and moons.
+This repository creates and distributes the unofficial Appimage of Celestia.
 
-## Original sources
-- SITE: https://celestia.space
-- AppImages: https://download.opensuse.org/repositories/home:/munix9/AppImage
-- Maps: https://commons.wikimedia.org and https://www.solarsystemscope.com
+From here you can download the scripts to build on top of [JuNest](https://github.com/fsquillace/junest), the lightweight Arch Linux based distro that runs, without root privileges, on top of any other Linux distro.
+
+---------------------------------
+
+## Debugging and improvements
+
+To improve it, extract the AppImage using the option `--appimage-extract` and follow the instructions [here](https://github.com/ivan-hc/ArchImage#troubleshooting).
 
 ---------------------------------
 
