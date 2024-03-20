@@ -1,4 +1,5 @@
-This repository creates and distributes the unofficial Appimage of Celestia.
+# Celestia-appimage
+This repository creates and distributes the unofficial, enhanced AppImage version of Celestia, the 3D space visualizer, including new and more detailed maps of planets and moons from https://commons.wikimedia.org and https://www.solarsystemscope.com
 
 From here you can download the scripts to build on top of [JuNest](https://github.com/fsquillace/junest), the lightweight Arch Linux based distro that runs, without root privileges, on top of any other Linux distro.
 
