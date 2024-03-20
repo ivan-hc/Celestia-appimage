@@ -20,8 +20,8 @@ jobs:
         mkdir tmp
         cd tmp
         wget https://download.opensuse.org/repositories/home:/munix9/AppImage/celestia-latest-x86_64.AppImage
-        wget -q $(wget -q https://api.github.com/repos/probonopd/go-appimage/releases -O - | grep -v zsync | grep -i continuous | grep -i appimagetool | grep -i x86_64 | grep browser_download_url | cut -d '"' -f 4 | head -1) -O appimagetool
-        chmod a+x ./appimagetool ./*.AppImage
+        wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+        chmod a+x ./*AppImage
         ./celestia*AppImage --appimage-extract
         mv squashfs-root celestia.AppDir
         cd celestia.AppDir
@@ -35,7 +35,7 @@ jobs:
         rm -R -f Celestia-appimage
         cd ..
         cd ..
-        ARCH=x86_64 VERSION=$(tmp/appimagetool -v | grep -o '[[:digit:]]*') tmp/appimagetool -s tmp/celestia.AppDir
+        ARCH=x86_64 tmp/appimagetool-x86_64.AppImage -n tmp/celestia.AppDir
         VERSION=$(wget -q https://download.opensuse.org/repositories/home:/munix9/AppImage/ -O - | grep "href=" | grep -i "appimage.zsync" | grep -v latest | head -1 | grep -E -o "([0-9]{1,}\.)+[0-9]{1,}" | head -1)
         mv *AppImage dist/Celestia-$VERSION-Enanched-x86_64.AppImage
 
