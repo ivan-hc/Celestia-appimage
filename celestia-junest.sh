@@ -3,7 +3,7 @@
 # NAME OF THE APP BY REPLACING "SAMPLE"
 APP=celestia
 BIN="$APP" #CHANGE THIS IF THE NAME OF THE BINARY IS DIFFERENT FROM "$APP" (for example, the binary of "obs-studio" is "obs")
-DEPENDENCES="ca-certificates "
+DEPENDENCES=""
 #BASICSTUFF="binutils debugedit gzip"
 #COMPILERS="base-devel"
 
@@ -201,9 +201,9 @@ rm -R -f ./$APP.AppDir/.junest/usr/man #APPIMAGES ARE NOT MENT TO HAVE MAN COMMA
 rm -R -f ./$APP.AppDir/.junest/var/* #REMOVE ALL PACKAGES DOWNLOADED WITH THE PACKAGE MANAGER
 
 # SAVE FILES USING KEYWORDS
-BINSAVED="certificates SAVEBINSPLEASE" # Enter here keywords to find and save in /usr/bin
-SHARESAVED="certificates SAVESHAREPLEASE" # Enter here keywords or file/folder names to save in both /usr/share and /usr/lib
-LIBSAVED="pk p11 alsa jack pipewire pulse SAVELIBSPLEASE" # Enter here keywords or file/folder names to save in /usr/lib
+BINSAVED="SAVEBINSPLEASE" # Enter here keywords to find and save in /usr/bin
+SHARESAVED="SAVESHAREPLEASE" # Enter here keywords or file/folder names to save in both /usr/share and /usr/lib
+LIBSAVED="pk p11 libGLX_indirect gtk" # Enter here keywords or file/folder names to save in /usr/lib
 
 # STEP 2, FUNCTION TO SAVE THE BINARIES IN /usr/bin THAT ARE NEEDED TO MADE JUNEST WORK, PLUS THE MAIN BINARY/BINARIES OF THE APP
 # IF YOU NEED TO SAVE MORE BINARIES, LIST THEM IN THE "BINSAVED" VARIABLE. COMMENT THE LINE "_savebins" IF YOU ARE NOT SURE.
@@ -291,7 +291,7 @@ function _mvlibs(){
 
 _binlibs 2> /dev/null
 
-#_include_swrast_dri 2> /dev/null
+_include_swrast_dri 2> /dev/null
 
 _libkeywords 2> /dev/null
 
@@ -332,7 +332,7 @@ rsync -av ./base/* ./$APP.AppDir/.junest/
 
 # RSYNC DEPENDENCES
 rm -R -f ./deps/.*
-rsync -av ./deps/* ./$APP.AppDir/.junest/
+#rsync -av ./deps/* ./$APP.AppDir/.junest/
 
 # ADDITIONAL REMOVALS
 #rm -R -f ./$APP.AppDir/.junest/usr/lib/libLLVM-* #INCLUDED IN THE COMPILATION PHASE, CAN SOMETIMES BE EXCLUDED FOR DAILY USE
@@ -340,14 +340,17 @@ rm -R -f ./$APP.AppDir/.junest/usr/lib/python*/__pycache__/* #IF PYTHON IS INSTA
 find ./$APP.AppDir/.junest/usr/lib/dri/ ! -name 'swrast_dri.so' -type f -exec rm -f {} +
 
 # ADD ENANCHEMENTS TO CELESTIA
-rm -R -f ./$APP.AppDir/.junest/usr/share/celestia/textures/medres ./$APP.AppDir/.junest/usr/share/celestia/textures/hires ./$APP.AppDir/.junest/usr/share/celestia/textures/lores
-git clone https://github.com/ivan-hc/Celestia-appimage.git
-mv Celestia-appimage/textures/hires ./$APP.AppDir/.junest/usr/share/celestia/textures/
-cd ./$APP.AppDir/.junest/usr/share/celestia/textures/
-ln -s hires lores
-ln -s hires medres
-cd -
-rm -R -f Celestia-appimage
+function _celestia_enanchements(){
+	rm -R -f ./$APP.AppDir/.junest/usr/share/celestia/textures/medres ./$APP.AppDir/.junest/usr/share/celestia/textures/hires ./$APP.AppDir/.junest/usr/share/celestia/textures/lores
+	git clone https://github.com/ivan-hc/Celestia-appimage.git
+	mv Celestia-appimage/textures/hires ./$APP.AppDir/.junest/usr/share/celestia/textures/
+	cd ./$APP.AppDir/.junest/usr/share/celestia/textures/
+	ln -s hires lores
+	ln -s hires medres
+	cd -
+	rm -R -f Celestia-appimage
+}
+_celestia_enanchements
 
 # REMOVE THE INBUILT HOME
 rm -R -f ./$APP.AppDir/.junest/home
