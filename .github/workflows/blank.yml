@@ -20,7 +20,7 @@ jobs:
         mkdir tmp
         cd tmp
         wget https://download.opensuse.org/repositories/home:/munix9/AppImage/celestia-latest-x86_64.AppImage
-        wget -q $(wget -q https://api.github.com/repos/probonopd/go-appimage/releases -O - | grep -v zsync | grep -i continuous | grep -i appimagetool | grep -i x86_64 | grep browser_download_url | cut -d '"' -f 4 | head -1) -O appimagetool
+        wget -q "$(wget -q https://api.github.com/repos/probonopd/go-appimage/releases -O - | grep -v zsync | grep -i continuous | grep -i appimagetool | grep -i x86_64 | grep browser_download_url | cut -d '"' -f 4 | head -1)" -O appimagetool
         chmod a+x ./*AppImage
         ./celestia*AppImage --appimage-extract
         mv squashfs-root celestia.AppDir
