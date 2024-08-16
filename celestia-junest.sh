@@ -9,7 +9,7 @@ COMPILERS="base-devel"
 
 # CREATE AND ENTER THE APPDIR
 if ! test -f ./appimagetool; then
-	wget -q "$(wget -q https://api.github.com/repos/probonopd/go-appimage/releases -O - | sed 's/"/ /g; s/ /\n/g' | grep -o 'https.*continuous.*tool.*86_64.*mage$')" -O appimagetool
+	wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool
 	chmod a+x appimagetool
 fi
 mkdir -p "$APP".AppDir && cd "$APP".AppDir || exit 1
@@ -20,12 +20,6 @@ HOME="$(dirname "$(readlink -f $0)")"
 # DOWNLOAD AND INSTALL JUNEST
 function _enable_multilib() {
 	printf "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> ./.junest/etc/pacman.conf
-}
-
-function _install_libselinux_if_dependence() {
-	if [[ "$DEPENDENCES" = *"libselinux"* ]]; then
-		printf "\n[selinux]\nServer = https://github.com/archlinuxhardened/selinux/releases/download/ArchLinux-SELinux\nSigLevel = Never" >> ./.junest/etc/pacman.conf
-	fi
 }
 
 function _enable_chaoticaur() {
@@ -53,7 +47,6 @@ function _bypass_signature_check_level() {
 
 function _pacman_patches() {
 	_enable_multilib
-	_install_libselinux_if_dependence
 	###_enable_chaoticaur
 	_custom_mirrorlist
 	_bypass_signature_check_level
@@ -132,6 +125,7 @@ if [ ! -z "$DEPENDENCES" ]; then
 	./.local/share/junest/bin/junest -- yay --noconfirm -S "$DEPENDENCES"
 fi
 if [ ! -z "$APP" ]; then
+	./.local/share/junest/bin/junest -- yay --noconfirm -S alsa-lib
 	./.local/share/junest/bin/junest -- yay --noconfirm -S "$APP"
 else
 	echo "No app found, exiting"; exit 1
@@ -207,17 +201,26 @@ function _create_AppRun() {
 	export JUNEST_HOME=$HERE/.junest
 	export PATH=$PATH:$HERE/.local/share/junest/bin
 
-	if test -f /etc/resolv.conf; then ETC_RESOLV=' --bind /etc/resolv.conf /etc/resolv.conf '; fi
-	if test -d /media; then MNT_MEDIA_DIR=' --bind /media /media '; fi
-	if test -d /mnt; then MNT_DIR=' --bind /mnt /mnt '; fi
-	if test -d /opt; then OPT_DIR=' --bind /opt /opt '; fi
-	if test -d /run/user; then USR_LIB_LOCALE_DIR=' --bind /usr/lib/locale /usr/lib/locale '; fi
-	if test -d /usr/share/fonts; then USR_SHARE_FONTS_DIR=' --bind /usr/share/fonts /usr/share/fonts '; fi
-	if test -d /usr/share/themes; then USR_SHARE_THEMES_DIR=' --bind /usr/share/themes /usr/share/themes '; fi
-
-	BINDS=" $ETC_RESOLV $MNT_MEDIA_DIR $MNT_DIR $OPT_DIR $USR_LIB_LOCALE_DIR $USR_SHARE_FONTS_DIR $USR_SHARE_THEMES_DIR "
-
-	if test -f $JUNEST_HOME/usr/lib/libselinux.so; then export LD_LIBRARY_PATH=/lib/:/lib64/:/lib/x86_64-linux-gnu/:/usr/lib/:"${LD_LIBRARY_PATH}"; fi
+	BINDS=" --dev-bind /dev /dev \
+		--ro-bind /sys /sys \
+		--bind-try /tmp /tmp \
+		--proc /proc \
+		--ro-bind-try /etc/resolv.conf /etc/resolv.conf \
+		--ro-bind-try /etc/hosts /etc/hosts \
+		--ro-bind-try /etc/nsswitch.conf /etc/nsswitch.conf \
+		--ro-bind-try /etc/passwd /etc/passwd \
+		--ro-bind-try /etc/group /etc/group \
+		--ro-bind-try /etc/machine-id /etc/machine-id \
+		--ro-bind-try /etc/asound.conf /etc/asound.conf \
+		--ro-bind-try /etc/localtime /etc/localtime \
+		--bind-try /media /media \
+		--bind-try /mnt /mnt \
+		--bind-try /opt /opt \
+		--bind-try /usr/lib/locale /usr/lib/locale \
+		--bind-try /usr/share/fonts /usr/share/fonts \
+		--bind-try /usr/share/themes /usr/share/themes \
+		--bind-try /var /var \
+		"
 
 	EXEC=$(grep -e '^Exec=.*' "${HERE}"/*.desktop | head -n 1 | cut -d "=" -f 2- | sed -e 's|%.||g')
 	$HERE/.local/share/junest/bin/junest -n -b "$BINDS" -- $EXEC "$@"
@@ -230,7 +233,7 @@ function _made_JuNest_a_potable_app() {
 	sed -i 's#${JUNEST_HOME}/usr/bin/junest_wrapper#${HOME}/.cache/junest_wrapper.old#g' ./.local/share/junest/lib/core/wrappers.sh
 	sed -i 's/rm -f "${JUNEST_HOME}${bin_path}_wrappers/#rm -f "${JUNEST_HOME}${bin_path}_wrappers/g' ./.local/share/junest/lib/core/wrappers.sh
 	sed -i 's/ln/#ln/g' ./.local/share/junest/lib/core/wrappers.sh
-	sed -i 's#--bind "$HOME" "$HOME"#--bind /home /home --bind-try /run/user /run/user#g' .local/share/junest/lib/core/namespace.sh
+	sed -i 's#--bind "$HOME" "$HOME"#--bind-try /home /home --bind-try /run/user /run/user#g' .local/share/junest/lib/core/namespace.sh
 	sed -i 's/rm -f "$file"/test -f "$file"/g' ./.local/share/junest/lib/core/wrappers.sh
 }
 
@@ -249,7 +252,6 @@ _set_locale
 _add_launcher_and_icon
 _create_AppRun
 _made_JuNest_a_potable_app
-_remove_some_bloatwares
 
 cd .. || exit 1 # EXIT THE APPDIR
 
@@ -341,7 +343,8 @@ echo ""
 # SAVE FILES USING KEYWORDS
 BINSAVED="SAVEBINSPLEASE" # Enter here keywords to find and save in /usr/bin
 SHARESAVED="SAVESHAREPLEASE" # Enter here keywords or file/directory names to save in both /usr/share and /usr/lib
-LIBSAVED="pk p11 libGLX_indirect gtk" # Enter here keywords or file/directory names to save in /usr/lib
+lib_browser_launcher="gio-launch-desktop libdl.so libpthread.so librt.so libasound.so libX11-xcb.so" # Libraries and files needed to launche the default browser
+LIBSAVED="pk p11 libGLX_indirect gtk $lib_browser_launcher" # Enter here keywords or file/directory names to save in /usr/lib
 
 # Save files in /usr/bin
 function _savebins() {
@@ -495,9 +498,9 @@ function _rsync_dependences() {
 }
 
 function _remove_more_bloatwares() {
-	rm -R -f ./"$APP".AppDir/.junest/home # remove the inbuilt home
+	_remove_some_bloatwares
+ 	rm -R -f ./"$APP".AppDir/.junest/home # remove the inbuilt home
 	rm -R -f ./"$APP".AppDir/.junest/usr/lib/python*/__pycache__/* # if python is installed, removing this directory can save several megabytes
-	rm -R -f ./"$APP".AppDir/.junest/var/*
 	#rm -R -f ./"$APP".AppDir/.junest/usr/lib/libLLVM-* # included in the compilation phase, can sometimes be excluded for daily use
 }
 
@@ -508,6 +511,7 @@ function _enable_mountpoints_for_the_inbuilt_bubblewrap() {
 	mkdir -p ./"$APP".AppDir/.junest/usr/share/fonts
 	mkdir -p ./"$APP".AppDir/.junest/usr/share/themes
 	mkdir -p ./"$APP".AppDir/.junest/run/user
+	rm -f ./"$APP".AppDir/.junest/etc/localtime && touch ./"$APP".AppDir/.junest/etc/localtime
 }
 
 _rsync_main_package
@@ -532,5 +536,5 @@ _celestia_enanchements
 if test -f ./*.AppImage; then
 	rm -R -f ./*archimage*.AppImage
 fi
-ARCH=x86_64 VERSION=$(./appimagetool -v | grep -o '[[:digit:]]*') ./appimagetool -s ./"$APP".AppDir
-mv ./*AppImage ./Celestia-GTK_"$VERSION"-archimage3.4.4-x86_64.AppImage
+ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 ./$APP.AppDir
+mv ./*AppImage ./"$(cat ./"$APP".AppDir/*.desktop | grep 'Name=' | head -1 | cut -c 6- | sed 's/ /-/g')"_"$VERSION"-archimage3.4.4-2-x86_64.AppImage
