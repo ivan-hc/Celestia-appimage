@@ -19,8 +19,8 @@ jobs:
       run: |
         sudo apt update && sudo apt install libfuse2 desktop-file-utils
         wget https://raw.githubusercontent.com/ivan-hc/Celestia-appimage/main/celestia-enanced-builder.sh
-        chmod a+x ./celestia-junest.sh
-        ./celestia-junest.sh
+        chmod a+x ./celestia-enanced-builder.sh
+        ./celestia-enanced-builder.sh
         mkdir dist
         mv *AppImage dist/
 
