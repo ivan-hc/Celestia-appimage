@@ -31,4 +31,4 @@ fi
 # Export to AppImage
 ARCH=x86_64 ./appimagetool --comp zstd --mksquashfs-opt -Xcompression-level --mksquashfs-opt 20 ./squashfs-root
 released_package=$(echo "$packagename" | sed 's/celestia/Celestia-Enanced/g')
-mv ./*AppImage ./"$released_package"
+cd .. && mv ./tmp/*AppImage ./"$released_package" || exit 1
