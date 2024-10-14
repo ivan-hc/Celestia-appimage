@@ -18,7 +18,7 @@ jobs:
       if: always()
       run: |
         sudo apt update && sudo apt install libfuse2 desktop-file-utils
-        wget https://raw.githubusercontent.com/ivan-hc/Celestia-appimage/main/celestia-junest.sh
+        wget https://raw.githubusercontent.com/ivan-hc/Celestia-appimage/main/celestia-enanced-builder.sh
         chmod a+x ./celestia-junest.sh
         ./celestia-junest.sh
         mkdir dist
