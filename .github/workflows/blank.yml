@@ -17,9 +17,10 @@ jobs:
     - name: build
       if: always()
       run: |
-        sudo apt update && sudo apt install desktop-file-utils appstream
-        chmod a+x ./celestia-enanced-builder.sh
-        ./celestia-enanced-builder.sh
+        sudo apt update
+        sudo apt install desktop-file-utils
+        chmod a+x ./celestia-junest.sh
+        ./celestia-junest.sh
         mkdir dist
         mv *AppImage* dist/
 
@@ -49,4 +50,3 @@ jobs:
             files: |
               *.AppImage*
             repo_token: ${{ secrets.GITHUB_TOKEN }}
-
