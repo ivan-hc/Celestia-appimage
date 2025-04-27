@@ -85,7 +85,7 @@ _install_junest() {
 	echo " Apply patches to PacMan..."
 	#_enable_multilib
 	#_enable_chaoticaur
-	#_enable_archlinuxcn
+	_enable_archlinuxcn
 	_custom_mirrorlist
 	_bypass_signature_check_level
 
