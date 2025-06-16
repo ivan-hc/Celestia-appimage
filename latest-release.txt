@@ -1,1 +1,1 @@
-https://github.com/ivan-hc/Celestia-appimage/releases/download/continuous/Celestia-Enanced_r7224.3a61a2df9-1-archimage4.3-x86_64.AppImage
+https://github.com/ivan-hc/Celestia-appimage/releases/download/continuous/Celestia-Enanced_r7228.814c49354-1-archimage4.3-x86_64.AppImage
