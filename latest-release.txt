@@ -1,2 +1,2 @@
-https://github.com/ivan-hc/Celestia-appimage/releases/download/continuous/Celestia-Enanced_r7238.69b371f53-1-archimage4.3-x86_64.AppImage
-Sun Jul 13 01:15:52 UTC 2025
+https://github.com/ivan-hc/Celestia-appimage/releases/download/continuous/Celestia-Enanced_r7256.b3a7b5ec7-1-archimage4.3-x86_64.AppImage
+Mon Jul 14 01:12:40 UTC 2025
