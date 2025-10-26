@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-APP=celestia-qt6
+APP=celestia
 BIN="$APP" #CHANGE THIS IF THE NAME OF THE BINARY IS DIFFERENT FROM "$APP" (for example, the binary of "obs-studio" is "obs")
 DEPENDENCES="gtkglext mesa" #SYNTAX: "APP1 APP2 APP3 APP4...", LEAVE BLANK IF NO OTHER DEPENDENCIES ARE NEEDED
-#BASICSTUFF="binutils debugedit gzip"
-#COMPILERS="base-devel"
+BASICSTUFF="binutils debugedit gzip"
+COMPILERS="base-devel"
 
 # Set keywords to searchan include in names of directories and files in /usr/bin (BINSAVED), /usr/share (SHARESAVED) and /usr/lib (LIBSAVED)
 BINSAVED="SAVEBINSPLEASE"
