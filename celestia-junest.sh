@@ -14,8 +14,8 @@ LIBSAVED="SAVELIBSPLEASE"
 # Set the items you want to manually REMOVE. Complete the path in /etc/, /usr/bin/, /usr/lib/, /usr/lib/python*/ and /usr/share/ respectively.
 # The "rm" command will take into account the listed object/path and add an asterisk at the end, completing the path to be removed.
 # Some keywords and paths are already set. Remove them if you consider them necessary for the AppImage to function properly.
-ETC_REMOVED="makepkg.conf pacman qt.conf"
-BIN_REMOVED="gcc"
+ETC_REMOVED="makepkg.conf pacman"
+BIN_REMOVED="gcc qt.conf"
 LIB_REMOVED="gcc"
 PYTHON_REMOVED="__pycache__/"
 SHARE_REMOVED="gcc icons/AdwaitaLegacy icons/Adwaita/cursors/ terminfo"
