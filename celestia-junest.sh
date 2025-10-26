@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-APP=celestia-qt5
+APP=celestia-qt6
 BIN="$APP" #CHANGE THIS IF THE NAME OF THE BINARY IS DIFFERENT FROM "$APP" (for example, the binary of "obs-studio" is "obs")
 DEPENDENCES="gtkglext mesa" #SYNTAX: "APP1 APP2 APP3 APP4...", LEAVE BLANK IF NO OTHER DEPENDENCIES ARE NEEDED
 #BASICSTUFF="binutils debugedit gzip"
