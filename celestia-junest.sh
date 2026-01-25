@@ -30,13 +30,13 @@ mountpoint_dirs=""
 # Post-installation processes (add whatever you want)
 _post_installation_processes() {
 	printf "\n◆ User's processes: \n\n"
-	# Download the enancements
+	# Remove the integrated probes and spaceships
+	rm -Rf AppDir/.junest/usr/share/celestia/extras-standard/*
+	# Download and add the enancements
 	if ! test -d ./Celestia-appimage; then
 		git clone https://github.com/ivan-hc/Celestia-appimage.git
 	fi
 	rsync -av Celestia-appimage/textures/hires/* AppDir/.junest/usr/share/celestia/textures/hires/
-	# Remove the integrated probes and spaceships
-	rm -Rf AppDir/.junest/usr/share/celestia/extras-standard/*
 	# Remove unnecessary textures and force the custom ones
 	cd AppDir/.junest/usr/share/celestia/textures/
 	rm -Rf ./medres ./lores
