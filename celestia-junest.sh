@@ -37,6 +37,12 @@ _post_installation_processes() {
 	rsync -av Celestia-appimage/textures/hires/* AppDir/.junest/usr/share/celestia/textures/hires/
 	cd AppDir/.junest/usr/share/celestia/textures/
 	rm -Rf ./medres ./lores
+	# Remove unnecessary textures
+	for a in ./hires/*.png; do
+		if ! echo "$a" | grep -qi "clouds.png\|rings.png"; then
+			rm -f "$a"
+		fi
+	done
 	ln -s hires lores
 	ln -s hires medres
 	cd -
