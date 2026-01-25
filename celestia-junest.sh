@@ -35,9 +35,11 @@ _post_installation_processes() {
 		git clone https://github.com/ivan-hc/Celestia-appimage.git
 	fi
 	rsync -av Celestia-appimage/textures/hires/* AppDir/.junest/usr/share/celestia/textures/hires/
+	# Remove the integrated probes and spaceships
+	rm -Rf AppDir/.junest/usr/share/celestia/extras-standard/*
+	# Remove unnecessary textures and force the custom ones
 	cd AppDir/.junest/usr/share/celestia/textures/
 	rm -Rf ./medres ./lores
-	# Remove unnecessary textures
 	for a in ./hires/*.png; do
 		if ! echo "$a" | grep -qi "clouds.png\|rings.png"; then
 			rm -f "$a"
